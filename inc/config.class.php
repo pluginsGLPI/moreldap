@@ -27,10 +27,11 @@ along with GLPI; along with moreldap. If not, see <http://www.gnu.org/licenses/>
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginMoreLdapConfig extends CommonDBTM {
+class PluginMoreldapConfig extends CommonDBTM {
 
 	// Type reservation : https://forge.indepnet.net/projects/plugins/wiki/PluginTypesReservation
 	// Reserved range   : none 
 	const RESERVED_TYPE_RANGE_MIN = 0;
 	const RESERVED_TYPE_RANGE_MAX = 0;
+	
 }

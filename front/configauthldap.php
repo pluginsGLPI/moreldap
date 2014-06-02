@@ -48,7 +48,7 @@ if ($plugin->isActivated("moreldap")) {
       'moreldap'
    );
 
-
+   Search::show("AuthLDAP");
 }
 
 // Footer
