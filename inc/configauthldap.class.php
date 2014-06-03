@@ -45,7 +45,22 @@ class PluginMoreldapConfigAuthLDAP extends CommonDBTM {
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
    
       if (in_array(get_class($item), array("AuthLDAP"))) {
-         echo "Configuration for the directory shows here";
+         echo '<div class="spaced">';
+         echo '<form id="items" name="items" method="post" action="' . Toolbox::getItemTypeFormURL(__CLASS__). '">';
+         echo '<table class="tab_cadre_fixehov">';
+         echo '<tr class="tab_bg_2">';
+         echo '<th colspan="2">' . __("Location of users", "moreldap") . '</th>';
+         echo '</tr>';
+         echo '<tr class="tab_bg_1">';
+         echo '<td>' . __("Location of users", "moreldap") . '</td>';
+         echo '<td><input type="text" name="todelete"></td>';
+         echo '</tr>';
+         echo '<tr class="tab_bg_1">';
+         echo '<td colspan="2" class="center"><input type="submit" class="submit" name="' . _sx('button', 'Save') . '"></td>';
+         echo '</tr>';
+         echo '</table>';
+         Html::closeForm();
+         echo "</div>";
       } 
       return true;
    }

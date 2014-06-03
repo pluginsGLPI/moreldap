@@ -23,7 +23,20 @@
  @since     2014
  ---------------------------------------------------------------------- */
 function plugin_moreldap_install() {
-	return true;
+	
+   global $DB;
+   
+   $oldVersion =  plugin_moreldap_getVersion();
+   switch ($oldVersion) {
+   	case '0':
+   	   include_once(GLPI_ROOT . "/plugins/moreldap/install/install.php");
+   	   plugin_moreldap_cleanInstall();
+   }
+   $query = "UPDATE `glpi_plugin_moreldap_config`
+             SET `value`='" . PLUGIN_MORELDAP_VERSION ."'
+             WHERE `name`='Version'";
+   $DB->query($query) or die($DB->error());
+       return true;
 }
 
 function plugin_moreldap_uninstall() {
@@ -56,5 +69,30 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
    }
 
    return $fields;
+}
+
+/**
+ * 
+ * Check if the plugin has already been installed
+ * 
+ */
+function plugin_moreldap_getVersion() {
+   
+   global $DB;
+   
+   if (!TableExists('glpi_plugin_moreldap_config')) {
+      return "0";
+   } else {
+      $query = "SELECT `name`, `value`
+                FROM `glpi_plugin_moreldap_config` 
+                WHERE `name`='Version'";
+      $result = $DB->query($query) or die(__("Unable to upgrade the plugin.", "moreldap"));
+      if ($DB->numrows($result) != 1) {
+         die(__("Unable to upgrade the plugin.", "moreldap"));
+      }
+      $data = $DB->fetch_assoc($result);
+      return $data['Version'];
+   }
+    
 }
 
