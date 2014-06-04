@@ -1,28 +1,38 @@
 <?php
 /*
- * @version $Id: setup.php 44 2014-03-27 21:05:00Z Thierry Bugier $
+ * @version $Id: config.class.php 36 2012-08-31 13:59:28Z dethegeek $
+----------------------------------------------------------------------
+MoreLDAP plugin for GLPI
+----------------------------------------------------------------------
+
 LICENSE
 
-This file is part of the moreldap plugin.
+This file is part of MoreLDAP plugin.
 
-Order plugin is free software; you can redistribute it and/or modify
+MoreLDAP plugin is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-Order plugin is distributed in the hope that it will be useful,
+MoreLDAP plugin is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with GLPI; along with moreldap. If not, see <http://www.gnu.org/licenses/>.
---------------------------------------------------------------------------
-@package   moreldap
-@author    Dethegeek
+along with MoreLDAP plugin; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+------------------------------------------------------------------------
+@package   MoreLDAP
+@author    the MoreLDAP plugin team
+@copyright Copyright (c) 2014-2014 MoreLDAP plugin team
+@license   GPLv2+
+http://www.gnu.org/licenses/gpl.txt
+@link      https://forge.indepnet.net/projects/moreldap
+@link      http://www.glpi-project.org/
 @since     2014
----------------------------------------------------------------------- */
-
+------------------------------------------------------------------------
+*/
  if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }

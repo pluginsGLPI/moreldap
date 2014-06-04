@@ -1,55 +1,55 @@
 <?php
 /*
+ * @version $Id: configauthldap.php 36 2012-08-31 13:59:28Z dethegeek $
 ----------------------------------------------------------------------
-GLPI - Gestionnaire Libre de Parc Informatique
-Copyright (C) 2003-2009 by the INDEPNET Development Team.
-
-http://indepnet.net/   http://glpi-project.org/
+MoreLDAP plugin for GLPI
 ----------------------------------------------------------------------
 
 LICENSE
 
-This file is part of GLPI.
+This file is part of MoreLDAP plugin.
 
-GLPI is free software; you can redistribute it and/or modify
+MoreLDAP plugin is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
-GLPI is distributed in the hope that it will be useful,
+MoreLDAP plugin is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
-along with GLPI; if not, write to the Free Software
+along with MoreLDAP plugin; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+------------------------------------------------------------------------
+@package   MoreLDAP
+@author    the MoreLDAP plugin team
+@copyright Copyright (c) 2014-2014 MoreLDAP plugin team
+@license   GPLv2+
+http://www.gnu.org/licenses/gpl.txt
+@link      https://forge.indepnet.net/projects/moreldap
+@link      http://www.glpi-project.org/
+@since     2014
 ------------------------------------------------------------------------
 */
 
 include ('../../../inc/includes.php');
 
-$plugin = new Plugin();
+// Check ACL
 
-// Check if plugin is installed and enabled
+Session::checkRight("config", 'r');
 
-if ($plugin->isActivated("moreldap")) {
+// Header
 
-   // Check ACL
+Html::header(
+   __('Configuration'),
+   $_SERVER['PHP_SELF'],
+   'plugins',
+   'moreldap'
+);
 
-   Session::checkRight("config", 'w');
-
-   // Header
-
-   Html::header(
-      __('Configuration'),
-      $_SERVER['PHP_SELF'],
-      'plugins',
-      'moreldap'
-   );
-
-   Search::show("AuthLDAP");
-}
+Search::show("AuthLDAP");
 
 // Footer
 

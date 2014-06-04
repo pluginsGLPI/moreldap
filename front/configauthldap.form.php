@@ -1,6 +1,6 @@
 <?php
 /*
- * @version $Id: install.php 36 2012-08-31 13:59:28Z dethegeek $
+ * @version $Id: configauthldap.form.php 36 2012-08-31 13:59:28Z dethegeek $
 ----------------------------------------------------------------------
 MoreLDAP plugin for GLPI
 ----------------------------------------------------------------------
@@ -34,35 +34,14 @@ http://www.gnu.org/licenses/gpl.txt
 ------------------------------------------------------------------------
 */
 
-/**
- * Create the database tables for the first install of the plugin
- */
-function plugin_moreldap_cleanInstall()
-{
-   global $DB;
-   
-   $query = "CREATE TABLE IF NOT EXIST `glpi_plugin_moreldap_config` (
-               `ID` int(11) NOT NULL auto_increment,
-               `name` varchar(64) UNIQUE NOT NULL default '0',
-               `value` varchar(250) NOT NULL default '',
-               PRIMARY KEY  (`ID`)
-            ) ENGINE=MyISAM
-            DEFAULT
-              CHARSET=utf8
-              COLLATE=utf8_unicode_ci";
-   $DB->query($query) or die($DB->error());
+define('GLPI_ROOT', '../../..');
+include (GLPI_ROOT . "/inc/includes.php");
 
-   $query = "CREATE TABLE IF NOT EXIST `glpi_plugin_moreldap_authldaps` (
-               `ID` int(11) NOT NULL auto_increment,
-               `location` varchar(255) NOT NULL default '',
-               PRIMARY KEY  (`ID`)
-            ) ENGINE=MyISAM
-            DEFAULT
-              CHARSET=utf8
-              COLLATE=utf8_unicode_ci";
-   $DB->query($query) or die($DB->error());
-   
-   $query = "INSERT INTO `glpi_plugin_moreldap_config`
-             SET `name`='Version', `value`='" . PLUGIN_MORELDAP_VERSION ."'";
-   $DB->query($query) or die($DB->error());
+Session::checkRight("config", "w");
+
+$config = new PluginMoreldapConfigAuthLDAP();
+
+if (isset($_POST["update"])) {
+   $config->update($_POST);
 }
+Html::back();
