@@ -37,25 +37,26 @@ http://www.gnu.org/licenses/gpl.txt
 /**
  * Create the database tables for the first install of the plugin
  */
-function plugin_moreldap_cleanInstall()
+function plugin_moreldap_DatabaseInstall()
 {
    global $DB;
    
-   $query = "CREATE TABLE IF NOT EXIST `glpi_plugin_moreldap_config` (
-               `ID` int(11) NOT NULL auto_increment,
+   $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_moreldap_config` (
+               `id` int(11) NOT NULL auto_increment,
                `name` varchar(64) UNIQUE NOT NULL default '0',
                `value` varchar(250) NOT NULL default '',
-               PRIMARY KEY  (`ID`)
+               PRIMARY KEY  (`id`)
             ) ENGINE=MyISAM
             DEFAULT
               CHARSET=utf8
               COLLATE=utf8_unicode_ci";
    $DB->query($query) or die($DB->error());
 
-   $query = "CREATE TABLE IF NOT EXIST `glpi_plugin_moreldap_authldaps` (
-               `ID` int(11) NOT NULL auto_increment,
+   $query = "CREATE TABLE IF NOT EXISTS `glpi_plugin_moreldap_authldaps` (
+               `id` int(11) NOT NULL auto_increment,
                `location` varchar(255) NOT NULL default '',
-               PRIMARY KEY  (`ID`)
+               `location_enabled` varchar(1) NOT NULL default 'N',
+               PRIMARY KEY  (`id`)
             ) ENGINE=MyISAM
             DEFAULT
               CHARSET=utf8
@@ -65,4 +66,16 @@ function plugin_moreldap_cleanInstall()
    $query = "INSERT INTO `glpi_plugin_moreldap_config`
              SET `name`='Version', `value`='" . PLUGIN_MORELDAP_VERSION ."'";
    $DB->query($query) or die($DB->error());
+}
+
+function plugin_moreldap_DatabaseUninstall()
+{
+   global $DB;
+   
+   $query = "DROP TABLE IF EXISTS `glpi_plugin_moreldap_config`";
+   $DB->query($query) or die($DB->error());
+    
+   $query = "DROP TABLE IF EXISTS `glpi_plugin_moreldap_authldaps`";
+   $DB->query($query) or die($DB->error());
+    
 }

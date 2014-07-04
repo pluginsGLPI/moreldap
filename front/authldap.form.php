@@ -39,9 +39,21 @@ include (GLPI_ROOT . "/inc/includes.php");
 
 Session::checkRight("config", "w");
 
-$config = new PluginMoreldapConfigAuthLDAP();
+$AuthLDAP = new PluginMoreldapAuthLDAP();
 
 if (isset($_POST["update"])) {
-   $config->update($_POST);
+   $_POST['id'] = Toolbox::cleanInteger($_POST['id']);
+   
+   $_POST['location_enabled'] = isset($_POST['location_enabled']) ? "Y" : "N";
+   if ($AuthLDAP->getFromDB($_POST['id']) == false) {
+      //The directory exists in GLPI but there is no data in the plugin
+      $query = "INSERT INTO `glpi_plugin_moreldap_authldaps` SET 
+                `id`='" . $_POST['id'] . "', 
+                `location`='" . $_POST['location'] . "',
+                `location_enabled`='" . $_POST['location_enabled'] ."'";
+      $DB->query($query) or die($DB->error());
+   } else {
+      $AuthLDAP->update($_POST);
+   }
 }
 Html::back();

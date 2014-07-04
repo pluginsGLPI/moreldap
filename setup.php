@@ -73,7 +73,7 @@ function plugin_init_moreldap() {
 	if ($plugin->isInstalled("moreldap") && $plugin->isActivated("moreldap")) {
    	
 	   //Add a tab on AuthLDAP items
-	   Plugin::registerClass('PluginMoreldapConfigAuthLDAP', array('addtabon' => 'AuthLDAP'));
+	   Plugin::registerClass('PluginMoreldapAuthLDAP', array('addtabon' => 'AuthLDAP'));
 	   
    	// request more attributes from LDAP
    	$PLUGIN_HOOKS['retrieve_more_field_from_ldap']['moreldap'] = "plugin_retrieve_more_field_from_ldap_moreldap";
@@ -82,7 +82,7 @@ function plugin_init_moreldap() {
 
 	      // Indicate where the configuration page can be found
       if (Session::haveRight('config', 'w')) {
-         $PLUGIN_HOOKS['config_page']['moreldap'] = 'front/configauthldap.php';
+         $PLUGIN_HOOKS['config_page']['moreldap'] = 'front/authldap.php';
       }
 	}
 }

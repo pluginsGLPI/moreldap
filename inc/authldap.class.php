@@ -37,7 +37,7 @@ if (!defined('GLPI_ROOT')) {
    die("Sorry. You can't access directly to this file");
 }
 
-class PluginMoreldapConfigAuthLDAP extends CommonDBTM {
+class PluginMoreldapAuthLDAP extends CommonDBTM {
 
    function getTabNameForItem(CommonGLPI $item, $withtemplate=0) {
       global $LANG;
@@ -55,20 +55,23 @@ class PluginMoreldapConfigAuthLDAP extends CommonDBTM {
    function preconfig($type = '') {
       switch ($type) {
       	default:
-      	   $this->fields['users_location'] = 'PhysicalDeliveryOfficeName';
+      	   $this->fields['location'] = 'PhysicalDeliveryOfficeName';
+      	   $this->fields['location_enabled'] = 'N';
       }
    }
    
    static function displayTabContentForItem(CommonGLPI $item, $tabnum=1, $withtemplate=0) {
    
       if (in_array(get_class($item), array("AuthLDAP"))) {
-         $configAuthLDAP = new PluginMoreldapConfigAuthLDAP;
+         $AuthLDAP = new PluginMoreldapAuthLDAP;
          
-         if (!$configAuthLDAP->getFromDB($item->fields['id'])) {
-            //The directory exists in GLPI bot there is no data in the plugin
-            $configAuthLDAP->preconfig();
+         if (!$AuthLDAP->getFromDB($item->fields['id'])) {
+            //The directory exists in GLPI but there is no data in the plugin
+            $AuthLDAP->preconfig();
+            
          }
          
+         $location_enabled = ($AuthLDAP->fields['location_enabled'] == 'Y') ? ' checked' : '';
          echo '<div class="spaced">';
          echo '<form id="items" name="items" method="post" action="' . Toolbox::getItemTypeFormURL(__CLASS__). '">';
          echo '<table class="tab_cadre_fixehov">';
@@ -77,7 +80,7 @@ class PluginMoreldapConfigAuthLDAP extends CommonDBTM {
          echo '</tr>';
          echo '<tr class="tab_bg_1">';
          echo '<td>' . __("LDAP attribute : location of users", "moreldap") . '</td>';
-         echo '<td><input width="32" type="text" name="users_location" value="' . $configAuthLDAP->fields['users_location'] . '"></td>';
+         echo '<td><input width="32" type="text" name="location" value="' . $AuthLDAP->fields['location'] . '">&nbsp;&nbsp;' . __("Enabled", "moreldap") . '&nbsp;<input type="checkbox" name="location_enabled"' . $location_enabled . ' value="location_enabled"></td>';
          echo '</tr>';
          echo '<tr class="tab_bg_1">';
          echo '<td colspan="2" class="center">';

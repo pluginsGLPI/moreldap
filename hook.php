@@ -42,7 +42,7 @@ function plugin_moreldap_install() {
       case '0':
    	case '0.1':
    	   include_once(GLPI_ROOT . "/plugins/moreldap/install/install.php");
-   	   plugin_moreldap_cleanInstall();
+   	   plugin_moreldap_DatabaseInstall();
    	
    	case '1.1':
    	      	   
@@ -55,7 +55,8 @@ function plugin_moreldap_install() {
 }
 
 function plugin_moreldap_uninstall() {
-	return true;
+	   include_once(GLPI_ROOT . "/plugins/moreldap/install/install.php");
+	   plugin_moreldap_DatabaseUninstall();
 }
 
 /**
@@ -66,7 +67,18 @@ function plugin_moreldap_uninstall() {
  * @return un tableau
  **/
 function plugin_retrieve_more_field_from_ldap_moreldap($fields) {
-   $fields[] = "PhysicalDeliveryOfficeName";
+   $pluginAuthLDAP = new PluginMoreldapAuthLDAP;
+   
+   
+   // There is no way to know which LDAP will be used, so we have 
+   // to retrieve all LDAP attributes in any LDAP server
+   $result = $pluginAuthLDAP->find("location_enabled='Y'");
+   
+   if (is_array($result)) {
+      foreach ($result as $attribute) {
+         $fields[] = $attribute['location'];
+      }
+   }
    return $fields;
 }
 
@@ -78,11 +90,17 @@ function plugin_retrieve_more_field_from_ldap_moreldap($fields) {
  * @return un tableau
  **/
 function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
+   $pluginAuthLDAP = new PluginMoreldapAuthLDAP;
+   $authLDAP = new AuthLDAP();
+   $user = new User();
+   $user->getFromSSO($fields['name']);
+   
+   
    if (isset($fields["_ldap_result"][0]["physicaldeliveryofficename"][0])) {
       $fields['locations_id'] = Dropdown::importExternal('Location',
                                                         addslashes($fields["_ldap_result"][0]["physicaldeliveryofficename"][0]));
    }
-
+   //die(print_r($fields));
    return $fields;
 }
 
