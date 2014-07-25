@@ -72,11 +72,11 @@ function plugin_retrieve_more_field_from_ldap_moreldap($fields) {
    
    // There is no way to know which LDAP will be used, so we have 
    // to retrieve all LDAP attributes in any LDAP server
-   $result = $pluginAuthLDAP->find("location_enabled='Y'");
+   $result = $pluginAuthLDAP->find("");
    
    if (is_array($result)) {
       foreach ($result as $attribute) {
-         $fields[] = $attribute['location'];
+         $fields[$attribute['location']] = $attribute['location'];
       }
    }
    return $fields;
@@ -93,12 +93,19 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
    $pluginAuthLDAP = new PluginMoreldapAuthLDAP;
    $authLDAP = new AuthLDAP();
    $user = new User();
-   $user->getFromSSO($fields['name']);
-   
-   
-   if (isset($fields["_ldap_result"][0]["physicaldeliveryofficename"][0])) {
-      $fields['locations_id'] = Dropdown::importExternal('Location',
-                                                        addslashes($fields["_ldap_result"][0]["physicaldeliveryofficename"][0]));
+   $user->getFromDBbyDn($fields['user_dn']);
+   ///die($fields['name'] . print_r($user->fields));
+   $result = $pluginAuthLDAP->getFromDBByQuery("WHERE `id`='" . $user->fields["auths_id"] . "'");
+   if ($result) {
+      if (isset($fields[$pluginAuthLDAP->fields['location']])) {
+         if ($pluginAuthLDAP->fields['location_enabled'] == 'Y') {
+            $fields['locations_id'] = Dropdown::importExternal('Location',
+                  addslashes(($fields['_ldap_result'][0][strtolower($pluginAuthLDAP->fields['location'])][0])));
+         } else {
+            //If the location retrieval is disabled, enablig this line will erase the location for the user.
+            //$fields['locations_id'] = 0;
+         }          
+      }
    }
    //die(print_r($fields));
    return $fields;
