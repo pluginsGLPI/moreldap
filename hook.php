@@ -99,8 +99,10 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
    if ($result) {
       if (isset($fields[$pluginAuthLDAP->fields['location']])) {
          if ($pluginAuthLDAP->fields['location_enabled'] == 'Y') {
-            $fields['locations_id'] = Dropdown::importExternal('Location',
-                  addslashes(($fields['_ldap_result'][0][strtolower($pluginAuthLDAP->fields['location'])][0])));
+				if (isset($fields['_ldap_result'][0][strtolower($pluginAuthLDAP->fields['location'])][0])) {
+					$fields['locations_id'] = Dropdown::importExternal('Location',
+					addslashes(($fields['_ldap_result'][0][strtolower($pluginAuthLDAP->fields['location'])][0])));
+				}
          } else {
             //If the location retrieval is disabled, enablig this line will erase the location for the user.
             //$fields['locations_id'] = 0;
