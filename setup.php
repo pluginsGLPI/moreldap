@@ -45,7 +45,7 @@ define ("PLUGIN_MORELDAP_GLPI_MAX_VERSION", "0.85");
 function plugin_version_moreldap() {
 	global $LANG;
 
-	$author = "Dethegeek";
+	$author = "<a href='mailto:dethegeek@gmail.com'>Dethegeek</a>";
 	return array ('name'     => __("MoreLDAP", "moreldap"),
 			'version'        => PLUGIN_MORELDAP_VERSION,
 			'author'         => $author,
