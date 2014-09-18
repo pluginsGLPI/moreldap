@@ -103,6 +103,10 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
    ///die($fields['name'] . print_r($user->fields));
    $result = $pluginAuthLDAP->getFromDBByQuery("WHERE `id`='" . $user->fields["auths_id"] . "'");
    if ($result) {
+      
+      // Defaults tu root entity
+      $entitiyID = 0;
+      
       if (isset($fields[$pluginAuthLDAP->fields['location']])) {
             // Explode multiple attributes for location hierarchy
             $locationHierarchy = explode('&gt;', $pluginAuthLDAP->fields['location']);
@@ -122,7 +126,7 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
                if ($pluginAuthLDAP->fields['location_enabled'] == 'Y') {
                   $locationValue = implode(' > ', $locationValue);
                   
-   					$fields['locations_id'] = Dropdown::importExternal('Location',	addslashes($locationValue));
+   					$fields['locations_id'] = Dropdown::importExternal('Location',	addslashes($locationValue), $entitiyID);
                } else {
                   //If the location retrieval is disabled, enablig this line will erase the location for the user.
                   //$fields['locations_id'] = 0;
