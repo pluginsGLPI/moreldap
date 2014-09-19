@@ -46,7 +46,8 @@ function plugin_moreldap_install() {
 
    	case '0.1.1':
    	   $query = "ALTER TABLE `glpi_plugin_moreldap_authldaps`
-             ADD COLUMN `entities_id` INT(11) NOT NULL default  '0'";
+             ADD COLUMN `entities_id` INT(11) NOT NULL default  '0',
+   	       ADD COLUMN `is_recursive` INT(1) NOT NULL DEFAULT '0'";
    	   $DB->query($query) or die($DB->error());
    	      	      	   
    }
@@ -81,7 +82,7 @@ function plugin_retrieve_more_field_from_ldap_moreldap($fields) {
       foreach ($result as $attribute) {
          $fields[$attribute['location']] = $attribute['location'];
          // Explode multiple attributes for location hierarchy 
-         $locationHierarchy = explode('&gt;', $attribute['location']);
+         $locationHierarchy = explode('>', $attribute['location']);
          foreach ($locationHierarchy as $locationSubAttribute) {
             $locationSubAttribute = trim($locationSubAttribute);
             $fields[$locationSubAttribute] = $locationSubAttribute;
@@ -103,7 +104,6 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
    $authLDAP = new AuthLDAP();
    $user = new User();
    $user->getFromDBbyDn($fields['user_dn']);
-   ///die($fields['name'] . print_r($user->fields));
 
    // default : store locations outside of any entity
    $entityID = -1;
@@ -114,42 +114,52 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
       
       if (isset($fields[$pluginAuthLDAP->fields['location']])) {
             // Explode multiple attributes for location hierarchy
-            $locationHierarchy = explode('&gt;', $pluginAuthLDAP->fields['location']);
-            $locationValue = array();
+            $locationHierarchy = explode('>', $pluginAuthLDAP->fields['location']);
+            $locationPath = array();
             $incompleteLocation = false;
             foreach ($locationHierarchy as $locationSubAttribute) {
                $locationSubAttribute = trim($locationSubAttribute);
                if (isset($fields['_ldap_result'][0][strtolower($locationSubAttribute)][0])) {
-                  $locationValue[] = $fields['_ldap_result'][0][strtolower($locationSubAttribute)][0];
+                  $locationPath[] = $fields['_ldap_result'][0][strtolower($locationSubAttribute)][0];
                } else {
                   $incompleteLocation = true;
                }
             }
-            //print_r($locationHierarchy); die();
             if ($incompleteLocation == false) {
-               //print_r($locationValue); die();
                if ($pluginAuthLDAP->fields['location_enabled'] == 'Y') {
-                  $locationValue = implode(' > ', $locationValue);
-                  
-   					$fields['locations_id'] = Dropdown::importExternal('Location',	addslashes($locationValue), $entityID);
+                  $location = new Location;
+                  $locationAncestor = 0;
+                  $locationCompleteName = array();
+                  foreach ($locationPath as $locationItem) {
+                     $locationCompleteName[] = $locationItem;
+                     $locationItem = array(
+                        'entities_id' => $entityID,
+                        'name' => $locationItem,
+                        'locations_id' => $locationAncestor,
+                        'completename' => implode(' > ', $locationCompleteName),
+                        'is_recursive' => '1'
+                     );
+                     $locationAncestor = $location->findID($locationItem);
+                     if ($locationAncestor == -1) {
+                        //The location does not exists yet
+                        $locationAncestor = $location->add($locationItem);
+                     } 
+                     if ($locationAncestor == false) {
+                        // If a location could not be imported, then give up importing children items 
+                        break;
+                     }
+                  }
+                  if ($locationAncestor != false) {
+                     $fields['locations_id'] = $locationAncestor;
+                  }
                } else {
                   //If the location retrieval is disabled, enablig this line will erase the location for the user.
                   //$fields['locations_id'] = 0;
                }
             } 
             
-//          if ($pluginAuthLDAP->fields['location_enabled'] == 'Y') {
-// 				if (isset($fields['_ldap_result'][0][strtolower($pluginAuthLDAP->fields['location'])][0])) {
-// 					$fields['locations_id'] = Dropdown::importExternal('Location',
-// 					addslashes(($fields['_ldap_result'][0][strtolower($pluginAuthLDAP->fields['location'])][0])));
-// 				}
-//          } else {
-//             //If the location retrieval is disabled, enablig this line will erase the location for the user.
-//             //$fields['locations_id'] = 0;
-//          }          
       }
    }
-   //die(print_r($fields));
    return $fields;
 }
 

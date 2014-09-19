@@ -57,6 +57,8 @@ class PluginMoreldapAuthLDAP extends CommonDBTM {
       	default:
       	   $this->fields['location'] = 'PhysicalDeliveryOfficeName';
       	   $this->fields['location_enabled'] = 'N';
+      	   $this->fields['entities_id'] = 0;
+      	   $this->fields['is_recursive'] = 0;
       }
    }
    
@@ -81,10 +83,12 @@ class PluginMoreldapAuthLDAP extends CommonDBTM {
          echo '</tr>';
          echo '<tr class="tab_bg_1">';
          echo '<td>' . __("LDAP attribute : location of users", "moreldap") . '</td>';
-         echo '<td>' . __("Enabled", "moreldap") . '&nbsp;<input type="checkbox" name="location_enabled"' . $location_enabled . ' value="location_enabled">';
-         echo '&nbsp;&nbsp;<input size="72" type="text" name="location" value="' . $AuthLDAP->fields['location'] . '"> ';
-         echo __("in entity", "moreldap");
-         Entity::dropdown(array('value'  => $AuthLDAP->fields['entities_id'])) ;
+         echo '<td>' . __("Enabled", "moreldap") . '&nbsp;<input type="checkbox" name="location_enabled"' . $location_enabled . ' value="location_enabled"><br />';
+         echo '<input size="72" type="text" name="location" value="' . $AuthLDAP->fields['location'] . '"> ';
+         echo '<br />';
+         Entity::dropdown(array('value' => $AuthLDAP->fields['entities_id']));
+         echo '&nbsp;' . __("recursive", "moreldap");
+         Dropdown::showYesNo('is_recursive', $AuthLDAP->fields['is_recursive']);
          echo ' </td>';
          echo '</tr>';
          echo '<tr class="tab_bg_1">';
