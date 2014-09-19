@@ -137,7 +137,7 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
                         'name' => $locationItem,
                         'locations_id' => $locationAncestor,
                         'completename' => implode(' > ', $locationCompleteName),
-                        'is_recursive' => '1'
+                        'is_recursive' => $pluginAuthLDAP->fields['is_recursive']
                      );
                      $locationAncestor = $location->findID($locationItem);
                      if ($locationAncestor == -1) {
