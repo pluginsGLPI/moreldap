@@ -87,7 +87,7 @@ class PluginMoreldapAuthLDAP extends CommonDBTM {
          echo '<input size="72" type="text" name="location" value="' . $AuthLDAP->fields['location'] . '"> ';
          echo '<br />';
          Entity::dropdown(array('value' => $AuthLDAP->fields['entities_id']));
-         echo '&nbsp;' . __("recursive", "moreldap");
+         echo '&nbsp;' . __("recursive", "moreldap") . "&nbsp;";
          Dropdown::showYesNo('is_recursive', $AuthLDAP->fields['is_recursive']);
          echo ' </td>';
          echo '</tr>';
