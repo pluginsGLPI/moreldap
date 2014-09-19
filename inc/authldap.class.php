@@ -72,6 +72,7 @@ class PluginMoreldapAuthLDAP extends CommonDBTM {
          }
          
          $location_enabled = ($AuthLDAP->fields['location_enabled'] == 'Y') ? ' checked' : '';
+         
          echo '<div class="spaced">';
          echo '<form id="items" name="items" method="post" action="' . Toolbox::getItemTypeFormURL(__CLASS__). '">';
          echo '<table class="tab_cadre_fixehov">';
@@ -80,7 +81,11 @@ class PluginMoreldapAuthLDAP extends CommonDBTM {
          echo '</tr>';
          echo '<tr class="tab_bg_1">';
          echo '<td>' . __("LDAP attribute : location of users", "moreldap") . '</td>';
-         echo '<td><input width="32" type="text" name="location" value="' . $AuthLDAP->fields['location'] . '">&nbsp;&nbsp;' . __("Enabled", "moreldap") . '&nbsp;<input type="checkbox" name="location_enabled"' . $location_enabled . ' value="location_enabled"></td>';
+         echo '<td>' . __("Enabled", "moreldap") . '&nbsp;<input type="checkbox" name="location_enabled"' . $location_enabled . ' value="location_enabled">';
+         echo '&nbsp;&nbsp;<input width="32" type="text" name="location" value="' . $AuthLDAP->fields['location'] . '"> ';
+         echo __("in entity", "moreldap");
+         Entity::dropdown(array('value'  => 0/*, 'entity' => $entities*/)) ;
+         echo ' </td>';
          echo '</tr>';
          echo '<tr class="tab_bg_1">';
          echo '<td colspan="2" class="center">';

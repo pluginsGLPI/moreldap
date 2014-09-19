@@ -56,6 +56,7 @@ function plugin_moreldap_DatabaseInstall()
                `id` int(11) NOT NULL auto_increment,
                `location` varchar(255) NOT NULL default '',
                `location_enabled` varchar(1) NOT NULL default 'N',
+               `entities_id` INT(11) NOT NULL default '0',
                PRIMARY KEY  (`id`)
             ) ENGINE=MyISAM
             DEFAULT

@@ -43,9 +43,12 @@ function plugin_moreldap_install() {
    	case '0.1':
    	   include_once(GLPI_ROOT . "/plugins/moreldap/install/install.php");
    	   plugin_moreldap_DatabaseInstall();
-   	
-   	case '1.1':
-   	      	   
+
+   	case '0.1.1':
+   	   $query = "ALTER TABLE `glpi_plugin_moreldap_authldaps`
+             ADD COLUMN `entities_id` INT(11) NOT NULL default  '0'";
+   	   $DB->query($query) or die($DB->error());
+   	      	      	   
    }
    $query = "UPDATE `glpi_plugin_moreldap_config`
              SET `value`='" . PLUGIN_MORELDAP_VERSION ."'
@@ -104,8 +107,8 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
    $result = $pluginAuthLDAP->getFromDBByQuery("WHERE `id`='" . $user->fields["auths_id"] . "'");
    if ($result) {
       
-      // Defaults tu root entity
-      $entitiyID = 0;
+      // Defaults to root entity
+      $entityID = 0;
       
       if (isset($fields[$pluginAuthLDAP->fields['location']])) {
             // Explode multiple attributes for location hierarchy
@@ -126,7 +129,7 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
                if ($pluginAuthLDAP->fields['location_enabled'] == 'Y') {
                   $locationValue = implode(' > ', $locationValue);
                   
-   					$fields['locations_id'] = Dropdown::importExternal('Location',	addslashes($locationValue), $entitiyID);
+   					$fields['locations_id'] = Dropdown::importExternal('Location',	addslashes($locationValue), $entityID);
                } else {
                   //If the location retrieval is disabled, enablig this line will erase the location for the user.
                   //$fields['locations_id'] = 0;
@@ -168,7 +171,7 @@ function plugin_moreldap_getVersion() {
          die(__("Unable to upgrade the plugin.", "moreldap"));
       }
       $data = $DB->fetch_assoc($result);
-      return $data['name'];
+      return $data['value'];
    }
     
 }
