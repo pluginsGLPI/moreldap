@@ -104,11 +104,13 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
    $user = new User();
    $user->getFromDBbyDn($fields['user_dn']);
    ///die($fields['name'] . print_r($user->fields));
-   $result = $pluginAuthLDAP->getFromDBByQuery("WHERE `id`='" . $user->fields["auths_id"] . "'");
-   if ($result) {
+
+   // default : store locations outside of any entity
+   $entityID = -1;
+
+   if ($pluginAuthLDAP->getFromDBByQuery("WHERE `id`='" . $user->fields["auths_id"] . "'")) {
       
-      // Defaults to root entity
-      $entityID = 0;
+      $entityID = $pluginAuthLDAP->fields['entities_id'];
       
       if (isset($fields[$pluginAuthLDAP->fields['location']])) {
             // Explode multiple attributes for location hierarchy

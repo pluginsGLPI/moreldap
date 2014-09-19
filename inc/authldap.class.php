@@ -84,7 +84,7 @@ class PluginMoreldapAuthLDAP extends CommonDBTM {
          echo '<td>' . __("Enabled", "moreldap") . '&nbsp;<input type="checkbox" name="location_enabled"' . $location_enabled . ' value="location_enabled">';
          echo '&nbsp;&nbsp;<input size="72" type="text" name="location" value="' . $AuthLDAP->fields['location'] . '"> ';
          echo __("in entity", "moreldap");
-         Entity::dropdown(array('value'  => 0/*, 'entity' => $entities*/)) ;
+         Entity::dropdown(array('value'  => $AuthLDAP->fields['entities_id'])) ;
          echo ' </td>';
          echo '</tr>';
          echo '<tr class="tab_bg_1">';

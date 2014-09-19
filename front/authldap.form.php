@@ -50,7 +50,8 @@ if (isset($_POST["update"])) {
       $query = "INSERT INTO `glpi_plugin_moreldap_authldaps` SET 
                 `id`='" . $_POST['id'] . "', 
                 `location`='" . $_POST['location'] . "',
-                `location_enabled`='" . $_POST['location_enabled'] ."'";
+                `location_enabled`='" . $_POST['location_enabled'] ."',
+                `entities_id`='" . $_POST['entities_id'] . "'";
       $DB->query($query) or die($DB->error());
    } else {
       $AuthLDAP->update($_POST);
