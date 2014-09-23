@@ -132,13 +132,13 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
                   $locationCompleteName = array();
                   foreach ($locationPath as $locationItem) {
                      $locationCompleteName[] = $locationItem;
-                     $locationItem = array(
+                     $locationItem = Toolbox::addslashes_deep(array(
                         'entities_id' => $entityID,
                         'name' => $locationItem,
                         'locations_id' => $locationAncestor,
                         'completename' => implode(' > ', $locationCompleteName),
                         'is_recursive' => $pluginAuthLDAP->fields['is_recursive']
-                     );
+                     ));
                      $locationAncestor = $location->findID($locationItem);
                      if ($locationAncestor == -1) {
                         //The location does not exists yet
