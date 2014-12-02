@@ -34,12 +34,12 @@ http://www.gnu.org/licenses/gpl.txt
 ------------------------------------------------------------------------
 */
 
-define ("PLUGIN_MORELDAP_VERSION", "0.1.2");
+define ("PLUGIN_MORELDAP_VERSION", "0.2.0");
 
 // Minimal GLPI version, inclusive
-define ("PLUGIN_MORELDAP_GLPI_MIN_VERSION", "0.84");
+define ("PLUGIN_MORELDAP_GLPI_MIN_VERSION", "0.85");
 // Maximum GLPI version, exclusive
-define ("PLUGIN_MORELDAP_GLPI_MAX_VERSION", "0.85");
+define ("PLUGIN_MORELDAP_GLPI_MAX_VERSION", "0.86");
 
 // Get the name and the version of the plugin - Needed
 function plugin_version_moreldap() {
@@ -81,7 +81,7 @@ function plugin_init_moreldap() {
    	$PLUGIN_HOOKS['retrieve_more_data_from_ldap']['moreldap'] = "plugin_retrieve_more_data_from_ldap_moreldap";
 
 	      // Indicate where the configuration page can be found
-      if (Session::haveRight('config', 'w')) {
+      if (Session::haveRight('config', UPDATE)) {
          $PLUGIN_HOOKS['config_page']['moreldap'] = 'front/authldap.php';
       }
 	}

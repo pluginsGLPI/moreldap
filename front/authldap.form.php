@@ -37,7 +37,7 @@ http://www.gnu.org/licenses/gpl.txt
 define('GLPI_ROOT', '../../..');
 include (GLPI_ROOT . "/inc/includes.php");
 
-Session::checkRight("config", "w");
+Session::checkRight("config", UPDATE);
 
 $AuthLDAP = new PluginMoreldapAuthLDAP();
 
