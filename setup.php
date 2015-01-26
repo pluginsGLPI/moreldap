@@ -71,7 +71,7 @@ function plugin_init_moreldap() {
 	
 	$plugin = new Plugin();
 	if ($plugin->isInstalled("moreldap") && $plugin->isActivated("moreldap")) {
-   	
+
 	   //Add a tab on AuthLDAP items
 	   Plugin::registerClass('PluginMoreldapAuthLDAP', array('addtabon' => 'AuthLDAP'));
 	   
@@ -85,6 +85,7 @@ function plugin_init_moreldap() {
          $PLUGIN_HOOKS['config_page']['moreldap'] = 'front/authldap.php';
       }
 	}
+
 }
 
 // Uninstall process for plugin : need to return true if succeeded : may display messages or add to message after redirect
