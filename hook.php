@@ -80,7 +80,6 @@ function plugin_retrieve_more_field_from_ldap_moreldap($fields) {
    
    if (is_array($result)) {
       foreach ($result as $attribute) {
-         $fields[$attribute['location']] = $attribute['location'];
          // Explode multiple attributes for location hierarchy 
          $locationHierarchy = explode('>', $attribute['location']);
          foreach ($locationHierarchy as $locationSubAttribute) {
@@ -112,53 +111,52 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
       
       $entityID = $pluginAuthLDAP->fields['entities_id'];
       
-      if (isset($fields[$pluginAuthLDAP->fields['location']])) {
-            // Explode multiple attributes for location hierarchy
-            $locationHierarchy = explode('>', $pluginAuthLDAP->fields['location']);
-            $locationPath = array();
-            $incompleteLocation = false;
-            foreach ($locationHierarchy as $locationSubAttribute) {
-               $locationSubAttribute = trim($locationSubAttribute);
-               if (isset($fields['_ldap_result'][0][strtolower($locationSubAttribute)][0])) {
-                  $locationPath[] = $fields['_ldap_result'][0][strtolower($locationSubAttribute)][0];
-               } else {
-                  $incompleteLocation = true;
+      // Explode multiple attributes for location hierarchy
+      $locationHierarchy = explode('>', $pluginAuthLDAP->fields['location']);
+      $locationPath = array();
+      $incompleteLocation = false;
+      foreach ($locationHierarchy as $locationSubAttribute) {
+         $locationSubAttribute = trim($locationSubAttribute);
+         if (isset($fields['_ldap_result'][0][strtolower($locationSubAttribute)][0])) {
+            $locationPath[] = $fields['_ldap_result'][0][strtolower($locationSubAttribute)][0];
+         } else {
+            $incompleteLocation = true;
+         }
+      }
+      
+      if ($incompleteLocation == false) {
+         if ($pluginAuthLDAP->fields['location_enabled'] == 'Y') {
+            $location = new Location;
+            $locationAncestor = 0;
+            $locationCompleteName = array();
+            foreach ($locationPath as $locationItem) {
+               $locationCompleteName[] = $locationItem;
+               $locationItem = Toolbox::addslashes_deep(array(
+                  'entities_id' => $entityID,
+                  'name' => $locationItem,
+                  'locations_id' => $locationAncestor,
+                  'completename' => implode(' > ', $locationCompleteName),
+                  'is_recursive' => $pluginAuthLDAP->fields['is_recursive'],
+                  'comment'      => __("Created by MoreLDAP", "moreldap")
+               ));
+               $locationAncestor = $location->findID($locationItem);
+               if ($locationAncestor == -1) {
+                  // The location does not exists yet
+                  $locationAncestor = $location->add($locationItem);
+               } 
+               if ($locationAncestor == false) {
+                  // If a location could not be imported, then give up importing children items 
+                  break;
                }
             }
-            if ($incompleteLocation == false) {
-               if ($pluginAuthLDAP->fields['location_enabled'] == 'Y') {
-                  $location = new Location;
-                  $locationAncestor = 0;
-                  $locationCompleteName = array();
-                  foreach ($locationPath as $locationItem) {
-                     $locationCompleteName[] = $locationItem;
-                     $locationItem = Toolbox::addslashes_deep(array(
-                        'entities_id' => $entityID,
-                        'name' => $locationItem,
-                        'locations_id' => $locationAncestor,
-                        'completename' => implode(' > ', $locationCompleteName),
-                        'is_recursive' => $pluginAuthLDAP->fields['is_recursive']
-                     ));
-                     $locationAncestor = $location->findID($locationItem);
-                     if ($locationAncestor == -1) {
-                        //The location does not exists yet
-                        $locationAncestor = $location->add($locationItem);
-                     } 
-                     if ($locationAncestor == false) {
-                        // If a location could not be imported, then give up importing children items 
-                        break;
-                     }
-                  }
-                  if ($locationAncestor != false) {
-                     $fields['locations_id'] = $locationAncestor;
-                  }
-               } else {
-                  //If the location retrieval is disabled, enablig this line will erase the location for the user.
-                  //$fields['locations_id'] = 0;
-               }
-            } 
-            
-      }
+            if ($locationAncestor != false) {
+               $fields['locations_id'] = $locationAncestor;
+            }
+         } else {
+            // If the location retrieval is disabled, enablig this line will erase the location for the user.
+            // $fields['locations_id'] = 0;
+         }
+      } 
    }
    return $fields;
 }
