@@ -1,0 +1,47 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) 2014 MoreLDAP plugin team
+# This file is distributed under the same license as the MoreLDAP package.
+# 
+# Translators:
+# Jérémy MOREAU <jmoreau.dev@gmail.com>, 2015
+msgid ""
+msgstr ""
+"Project-Id-Version: GLPI Plugin - MoreLDAP\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-06-02 03:00+0100\n"
+"PO-Revision-Date: 2015-09-18 12:45+0000\n"
+"Last-Translator: Jérémy MOREAU <jmoreau.dev@gmail.com>\n"
+"Language-Team: English (United Kingdom) (http://www.transifex.com/teclib/glpi-plugin-moreldap/language/en_GB/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: en_GB\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: hook.php:138
+msgid "Created by MoreLDAP"
+msgstr "Created by MoreLDAP"
+
+#: hook.php:178
+msgid "Unable to upgrade the plugin."
+msgstr "Unable to upgrade the plugin."
+
+#: inc/authldap.class.php:48
+msgid "MoreLDAP configuration"
+msgstr "MoreLDAP configuration"
+
+#: inc/authldap.class.php82, setup.php:49
+msgid "MoreLDAP"
+msgstr "MoreLDAP"
+
+#: inc/authldap.class.php:85
+msgid "LDAP attribute : location of users"
+msgstr "LDAP attribute : location of users"
+
+#: inc/authldap.class.php:86
+msgid "Enabled"
+msgstr "Enabled"
+
+#: inc/authldap.class.php
+msgid "recursive"
+msgstr "recursive"

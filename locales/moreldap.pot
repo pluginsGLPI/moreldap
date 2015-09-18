@@ -18,4 +18,30 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
 
+#: hook.php:138
+msgid "Created by MoreLDAP"
+msgstr ""
 
+#: hook.php:178
+msgid "Unable to upgrade the plugin."
+msgstr ""
+
+#: inc/authldap.class.php:48
+msgid "MoreLDAP configuration"
+msgstr ""
+
+#: inc/authldap.class.php:82, setup.php:49
+msgid "MoreLDAP"
+msgstr ""
+
+#: inc/authldap.class.php:85
+msgid "LDAP attribute : location of users"
+msgstr ""
+
+#: inc/authldap.class.php:86
+msgid "Enabled"
+msgstr ""
+
+#: inc/authldap.class.php:
+msgid "recursive"
+msgstr ""
