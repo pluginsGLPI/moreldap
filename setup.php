@@ -50,7 +50,7 @@ function plugin_version_moreldap() {
 			'version'        => PLUGIN_MORELDAP_VERSION,
 			'author'         => $author,
 			'license'        => 'GPLv2+',
-			'homepage'       => 'https://forge.indepnet.net/projects/moreldap',
+			'homepage'       => 'https://github.com/pluginsGLPI/moreldap',
 			'minGlpiVersion' => PLUGIN_MORELDAP_GLPI_MIN_VERSION);
 }
 
