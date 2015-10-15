@@ -39,7 +39,7 @@ define ("PLUGIN_MORELDAP_VERSION", "0.2.0");
 // Minimal GLPI version, inclusive
 define ("PLUGIN_MORELDAP_GLPI_MIN_VERSION", "0.85");
 // Maximum GLPI version, exclusive
-define ("PLUGIN_MORELDAP_GLPI_MAX_VERSION", "0.86");
+define ("PLUGIN_MORELDAP_GLPI_MAX_VERSION", "0.91");
 
 // Get the name and the version of the plugin - Needed
 function plugin_version_moreldap() {
@@ -65,29 +65,31 @@ function plugin_moreldap_check_prerequisites() {
 
 
 function plugin_init_moreldap() {
-	global $PLUGIN_HOOKS, $CFG_GLPI, $LANG;
-	
-	$PLUGIN_HOOKS['csrf_compliant']['moreldap'] = true;
-	
-	$plugin = new Plugin();
-	if ($plugin->isInstalled("moreldap") && $plugin->isActivated("moreldap")) {
-   	
-	   //Add a tab on AuthLDAP items
-	   Plugin::registerClass('PluginMoreldapAuthLDAP', array('addtabon' => 'AuthLDAP'));
-	   
-   	// request more attributes from LDAP
-   	$PLUGIN_HOOKS['retrieve_more_field_from_ldap']['moreldap'] = "plugin_retrieve_more_field_from_ldap_moreldap";
-   	// Retrieve others datas from LDAP
-   	$PLUGIN_HOOKS['retrieve_more_data_from_ldap']['moreldap'] = "plugin_retrieve_more_data_from_ldap_moreldap";
-
-	      // Indicate where the configuration page can be found
+   global $PLUGIN_HOOKS, $CFG_GLPI, $LANG;
+   
+   $PLUGIN_HOOKS['csrf_compliant']['moreldap'] = true;
+   
+   $plugin = new Plugin();
+   if ($plugin->isInstalled("moreldap") && $plugin->isActivated("moreldap")) {
+      
+      // Add a tab on AuthLDAP items
+      Plugin::registerClass('PluginMoreldapAuthLDAP', array(
+            'addtabon' => 'AuthLDAP'
+      ));
+      
+      // request more attributes from LDAP
+      $PLUGIN_HOOKS['retrieve_more_field_from_ldap']['moreldap'] = "plugin_retrieve_more_field_from_ldap_moreldap";
+      // Retrieve others datas from LDAP
+      $PLUGIN_HOOKS['retrieve_more_data_from_ldap']['moreldap'] = "plugin_retrieve_more_data_from_ldap_moreldap";
+      
+      // Indicate where the configuration page can be found
       if (Session::haveRight('config', UPDATE)) {
          $PLUGIN_HOOKS['config_page']['moreldap'] = 'front/authldap.php';
       }
-	}
+   }
 }
 
 // Uninstall process for plugin : need to return true if succeeded : may display messages or add to message after redirect
 function plugin_moreldap_check_config() {
-	return true;
+   return true;
 }
