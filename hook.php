@@ -43,13 +43,13 @@ function plugin_moreldap_install() {
    	case '0.1':
    	   include_once(GLPI_ROOT . "/plugins/moreldap/install/install.php");
    	   plugin_moreldap_DatabaseInstall();
-
+         break;
    	case '0.1.1':
    	   $query = "ALTER TABLE `glpi_plugin_moreldap_authldaps`
              ADD COLUMN `entities_id` INT(11) NOT NULL default  '0',
    	       ADD COLUMN `is_recursive` INT(1) NOT NULL DEFAULT '0'";
    	   $DB->query($query) or die($DB->error());
-   	      	      	   
+         break;
    }
    $query = "UPDATE `glpi_plugin_moreldap_config`
              SET `value`='" . PLUGIN_MORELDAP_VERSION ."'
