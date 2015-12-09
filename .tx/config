@@ -1,0 +1,8 @@
+[main]
+host = https://www.transifex.com
+
+[glpi-plugin-moreldap.moreldappot]
+file_filter = locales/<lang>.po
+source_file = locales/moreldap.pot
+source_lang = en
+
