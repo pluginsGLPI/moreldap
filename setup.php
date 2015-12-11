@@ -39,7 +39,6 @@ define ("PLUGIN_MORELDAP_VERSION", "0.2.0");
 // Minimal GLPI version, inclusive
 define ("PLUGIN_MORELDAP_GLPI_MIN_VERSION", "0.85");
 // Maximum GLPI version, exclusive
-define ("PLUGIN_MORELDAP_GLPI_MAX_VERSION", "0.91");
 
 // Get the name and the version of the plugin - Needed
 function plugin_version_moreldap() {
@@ -56,8 +55,8 @@ function plugin_version_moreldap() {
 
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_moreldap_check_prerequisites() {
-	if (version_compare(GLPI_VERSION, PLUGIN_MORELDAP_GLPI_MIN_VERSION, 'lt') || version_compare(GLPI_VERSION, PLUGIN_MORELDAP_GLPI_MAX_VERSION, 'ge')) {
-		echo "This plugin requires GLPI >= " . PLUGIN_MORELDAP_GLPI_MIN_VERSION . " and GLPI < " . PLUGIN_MORELDAP_GLPI_MAX_VERSION;
+	if (version_compare(GLPI_VERSION, PLUGIN_MORELDAP_GLPI_MIN_VERSION, 'lt')) {
+		echo "This plugin requires GLPI >= " . PLUGIN_MORELDAP_GLPI_MIN_VERSION;
 		return false;
 	}
 	return true;
