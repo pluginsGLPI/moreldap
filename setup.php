@@ -77,8 +77,10 @@ function plugin_init_moreldap() {
 	   
    	// request more attributes from LDAP
    	$PLUGIN_HOOKS['retrieve_more_field_from_ldap']['moreldap'] = "plugin_retrieve_more_field_from_ldap_moreldap";
-   	// Retrieve others datas from LDAP
-   	$PLUGIN_HOOKS['retrieve_more_data_from_ldap']['moreldap'] = "plugin_retrieve_more_data_from_ldap_moreldap";
+      // Retrieve others datas from LDAP
+      $PLUGIN_HOOKS['item_add']['moreldap'] = array(
+         'User' => 'plugin_moreldap_item_add_user',
+      );
 
 	      // Indicate where the configuration page can be found
       if (Session::haveRight('config', 'w')) {

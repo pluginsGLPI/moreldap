@@ -98,11 +98,12 @@ function plugin_retrieve_more_field_from_ldap_moreldap($fields) {
  * @return un tableau
  **/
 function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
-   
+   $user = new User();
+   if (!$user->getFromDBbyDn($fields['user_dn'])) {
+      return $fields;
+   }
    $pluginAuthLDAP = new PluginMoreldapAuthLDAP;
    $authLDAP = new AuthLDAP();
-   $user = new User();
-   $user->getFromDBbyDn($fields['user_dn']);
 
    // default : store locations outside of any entity
    $entityID = -1;
@@ -159,6 +160,44 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
 
    }
    return $fields;
+}
+
+function plugin_moreldap_item_add_user($user) {
+   Toolbox::logDebug($user);
+   $pluginAuthLDAP = new PluginMoreldapAuthLDAP;
+   $pluginAuthLDAP->getFromDBByQuery("WHERE `id`='" . $user->input["auths_id"] . "'");
+
+   $field           = $pluginAuthLDAP->fields['location'];
+   $ldap_connection = $user->input['_ldap_conn'];
+   $userdn          = $user->input['user_dn'];
+   $sr              = @ldap_read($ldap_connection, $userdn, "objectClass=*", array($field));
+   $v               = AuthLDAP::get_entries_clean($ldap_connection, $sr);
+   $locations_name  = $v[0][$field][0];
+   $locations_name  = 'Formation > GLPI';
+
+   //check if this location exist
+   $location  = new location;
+   $locations = $location->find("name = '$locations_name'");
+   if (count($locations) > 0) {
+      //get existing location
+      $first_location = array_shift($locations);
+      $locations_id   = $first_location['id'];
+
+   } else {
+      //create new location
+      $new_location = array(
+         'name'         => $locations_name,
+         'comment'      => __("Created by MoreLDAP", "moreldap"),
+         'entities_id'  => 0,
+         'is_recursive' => 1
+      );
+      $locations_id = $location->add($new_location);
+   }
+
+   $user->update(array(
+      'id'           => $user->getID(),
+      'locations_id' => $locations_id,
+   ));
 }
 
 /**
