@@ -73,19 +73,16 @@ function plugin_init_moreldap() {
 	   //Add a tab on AuthLDAP items
 	   Plugin::registerClass('PluginMoreldapAuthLDAP', array('addtabon' => 'AuthLDAP'));
 
-   	// request more attributes from LDAP
-   	$PLUGIN_HOOKS['retrieve_more_field_from_ldap']['moreldap'] = "plugin_retrieve_more_field_from_ldap_moreldap";
+      // request more attributes from LDAP
+      // $PLUGIN_HOOKS['retrieve_more_field_from_ldap']['moreldap'] = "plugin_retrieve_more_field_from_ldap_moreldap";
       // Retrieve others datas from LDAP
       $PLUGIN_HOOKS['item_add']['moreldap'] = array(
-         'User' => 'plugin_moreldap_item_add_user',
+         'User' => 'plugin_moreldap_item_add_or_update_user',
       );
-
-	      // Indicate where the configuration page can be found
-      if (Session::haveRight('config', 'w')) {
-         $PLUGIN_HOOKS['config_page']['moreldap'] = 'front/authldap.php';
-      }
-	}
-
+      $PLUGIN_HOOKS['item_update']['moreldap'] = array(
+            'User' => 'plugin_moreldap_item_add_or_update_user',
+      );
+   }
 }
 
 // Uninstall process for plugin : need to return true if succeeded : may display messages or add to message after redirect
