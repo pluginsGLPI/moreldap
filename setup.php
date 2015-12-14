@@ -34,12 +34,11 @@ http://www.gnu.org/licenses/gpl.txt
 ------------------------------------------------------------------------
 */
 
-define ("PLUGIN_MORELDAP_VERSION", "0.1.2");
+define ("PLUGIN_MORELDAP_VERSION", "0.2.0");
 
 // Minimal GLPI version, inclusive
-define ("PLUGIN_MORELDAP_GLPI_MIN_VERSION", "0.84");
+define ("PLUGIN_MORELDAP_GLPI_MIN_VERSION", "0.85");
 // Maximum GLPI version, exclusive
-define ("PLUGIN_MORELDAP_GLPI_MAX_VERSION", "0.85");
 
 // Get the name and the version of the plugin - Needed
 function plugin_version_moreldap() {
@@ -50,14 +49,14 @@ function plugin_version_moreldap() {
 			'version'        => PLUGIN_MORELDAP_VERSION,
 			'author'         => $author,
 			'license'        => 'GPLv2+',
-			'homepage'       => 'https://forge.indepnet.net/projects/moreldap',
+			'homepage'       => 'https://github.com/pluginsGLPI/moreldap',
 			'minGlpiVersion' => PLUGIN_MORELDAP_GLPI_MIN_VERSION);
 }
 
 // Optional : check prerequisites before install : may print errors or add to message after redirect
 function plugin_moreldap_check_prerequisites() {
-	if (version_compare(GLPI_VERSION, PLUGIN_MORELDAP_GLPI_MIN_VERSION, 'lt') || version_compare(GLPI_VERSION, PLUGIN_MORELDAP_GLPI_MAX_VERSION, 'ge')) {
-		echo "This plugin requires GLPI >= " . PLUGIN_MORELDAP_GLPI_MIN_VERSION . " and GLPI < " . PLUGIN_MORELDAP_GLPI_MAX_VERSION;
+	if (version_compare(GLPI_VERSION, PLUGIN_MORELDAP_GLPI_MIN_VERSION, 'lt')) {
+		echo "This plugin requires GLPI >= " . PLUGIN_MORELDAP_GLPI_MIN_VERSION;
 		return false;
 	}
 	return true;
@@ -66,15 +65,15 @@ function plugin_moreldap_check_prerequisites() {
 
 function plugin_init_moreldap() {
 	global $PLUGIN_HOOKS, $CFG_GLPI, $LANG;
-	
+
 	$PLUGIN_HOOKS['csrf_compliant']['moreldap'] = true;
-	
+
 	$plugin = new Plugin();
 	if ($plugin->isInstalled("moreldap") && $plugin->isActivated("moreldap")) {
 
 	   //Add a tab on AuthLDAP items
 	   Plugin::registerClass('PluginMoreldapAuthLDAP', array('addtabon' => 'AuthLDAP'));
-	   
+
    	// request more attributes from LDAP
    	$PLUGIN_HOOKS['retrieve_more_field_from_ldap']['moreldap'] = "plugin_retrieve_more_field_from_ldap_moreldap";
       // Retrieve others datas from LDAP
@@ -92,5 +91,5 @@ function plugin_init_moreldap() {
 
 // Uninstall process for plugin : need to return true if succeeded : may display messages or add to message after redirect
 function plugin_moreldap_check_config() {
-	return true;
+   return true;
 }

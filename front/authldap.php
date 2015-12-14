@@ -38,7 +38,7 @@ include ('../../../inc/includes.php');
 
 // Check ACL
 
-Session::checkRight("config", 'r');
+Session::checkRight("config", READ);
 
 // Header
 

@@ -34,33 +34,33 @@ http://www.gnu.org/licenses/gpl.txt
 ------------------------------------------------------------------------
 */
 function plugin_moreldap_install() {
-	
    global $DB;
-   
-   $oldVersion =  plugin_moreldap_getVersion();
+
+   $oldVersion = plugin_moreldap_getVersion();
    switch ($oldVersion) {
-      case '0':
-   	case '0.1':
-   	   include_once(GLPI_ROOT . "/plugins/moreldap/install/install.php");
-   	   plugin_moreldap_DatabaseInstall();
+      case '0' :
+      case '0.1' :
+         include_once (GLPI_ROOT . "/plugins/moreldap/install/install.php");
+         plugin_moreldap_DatabaseInstall();
          break;
-   	case '0.1.1':
-   	   $query = "ALTER TABLE `glpi_plugin_moreldap_authldaps`
+
+      case '0.1.1' :
+         $query = "ALTER TABLE `glpi_plugin_moreldap_authldaps`
              ADD COLUMN `entities_id` INT(11) NOT NULL default  '0',
    	       ADD COLUMN `is_recursive` INT(1) NOT NULL DEFAULT '0'";
-   	   $DB->query($query) or die($DB->error());
+         $DB->query($query) or die($DB->error());
          break;
    }
    $query = "UPDATE `glpi_plugin_moreldap_config`
-             SET `value`='" . PLUGIN_MORELDAP_VERSION ."'
+             SET `value`='" . PLUGIN_MORELDAP_VERSION . "'
              WHERE `name`='Version'";
    $DB->query($query) or die($DB->error());
    return true;
 }
 
 function plugin_moreldap_uninstall() {
-	   include_once(GLPI_ROOT . "/plugins/moreldap/install/install.php");
-	   plugin_moreldap_DatabaseUninstall();
+   include_once (GLPI_ROOT . "/plugins/moreldap/install/install.php");
+   plugin_moreldap_DatabaseUninstall();
 }
 
 /**
@@ -71,17 +71,17 @@ function plugin_moreldap_uninstall() {
  * @return un tableau
  **/
 function plugin_retrieve_more_field_from_ldap_moreldap($fields) {
-   $pluginAuthLDAP = new PluginMoreldapAuthLDAP;
-   
-   // There is no way to know which LDAP will be used, so we have 
+   $pluginAuthLDAP = new PluginMoreldapAuthLDAP();
+
+   // There is no way to know which LDAP will be used, so we have
    // to retrieve all LDAP attributes in any LDAP server
    $result = $pluginAuthLDAP->find("");
-   
+
    if (is_array($result)) {
       foreach ($result as $attribute) {
-         // Explode multiple attributes for location hierarchy 
+         // Explode multiple attributes for location hierarchy
          $locationHierarchy = explode('>', $attribute['location']);
-         foreach ($locationHierarchy as $locationSubAttribute) {
+         foreach ( $locationHierarchy as $locationSubAttribute ) {
             $locationSubAttribute = trim($locationSubAttribute);
             $fields[$locationSubAttribute] = $locationSubAttribute;
          }
@@ -102,20 +102,20 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
    if (!$user->getFromDBbyDn($fields['user_dn'])) {
       return $fields;
    }
-   $pluginAuthLDAP = new PluginMoreldapAuthLDAP;
+   $pluginAuthLDAP = new PluginMoreldapAuthLDAP();
    $authLDAP = new AuthLDAP();
 
    // default : store locations outside of any entity
    $entityID = -1;
 
    if ($pluginAuthLDAP->getFromDBByQuery("WHERE `id`='" . $user->fields["auths_id"] . "'")) {
-      
+
       $entityID = $pluginAuthLDAP->fields['entities_id'];
-      
+
       $locationHierarchy = explode('>', $pluginAuthLDAP->fields['location']);
       $locationPath = array();
       $incompleteLocation = false;
-      foreach ($locationHierarchy as $locationSubAttribute) {
+      foreach ( $locationHierarchy as $locationSubAttribute ) {
          $locationSubAttribute = trim($locationSubAttribute);
          if (isset($fields['_ldap_result'][0][strtolower($locationSubAttribute)][0])) {
             $locationPath[] = $fields['_ldap_result'][0][strtolower($locationSubAttribute)][0];
@@ -123,29 +123,29 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
             $incompleteLocation = true;
          }
       }
-      
+
       if ($incompleteLocation == false) {
          if ($pluginAuthLDAP->fields['location_enabled'] == 'Y') {
-            $location = new Location;
+            $location = new Location();
             $locationAncestor = 0;
             $locationCompleteName = array();
-            foreach ($locationPath as $locationItem) {
+            foreach ( $locationPath as $locationItem ) {
                $locationCompleteName[] = $locationItem;
                $locationItem = Toolbox::addslashes_deep(array(
-                  'entities_id' => $entityID,
-                  'name' => $locationItem,
-                  'locations_id' => $locationAncestor,
-                  'completename' => implode(' > ', $locationCompleteName),
-                  'is_recursive' => $pluginAuthLDAP->fields['is_recursive'],
-                  'comment'      => __("Created by MoreLDAP", "moreldap")
+                     'entities_id' => $entityID,
+                     'name' => $locationItem,
+                     'locations_id' => $locationAncestor,
+                     'completename' => implode(' > ', $locationCompleteName),
+                     'is_recursive' => $pluginAuthLDAP->fields['is_recursive'],
+                     'comment' => __("Created by MoreLDAP", "moreldap")
                ));
                $locationAncestor = $location->findID($locationItem);
                if ($locationAncestor == -1) {
                   // The location does not exists yet
                   $locationAncestor = $location->add($locationItem);
-               } 
+               }
                if ($locationAncestor == false) {
-                  // If a location could not be imported, then give up importing children items 
+                  // If a location could not be imported, then give up importing children items
                   break;
                }
             }
@@ -156,8 +156,7 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
             // If the location retrieval is disabled, enablig this line will erase the location for the user.
             // $fields['locations_id'] = 0;
          }
-      } 
-
+      }
    }
    return $fields;
 }
@@ -201,19 +200,18 @@ function plugin_moreldap_item_add_user($user) {
 }
 
 /**
- * 
+ *
  * Check if the plugin has already been installed
- * 
+ *
  */
 function plugin_moreldap_getVersion() {
-   
    global $DB;
-   
+
    if (!TableExists('glpi_plugin_moreldap_config')) {
       return "0";
    } else {
       $query = "SELECT `name`, `value`
-                FROM `glpi_plugin_moreldap_config` 
+                FROM `glpi_plugin_moreldap_config`
                 WHERE `name`='Version'";
       $result = $DB->query($query) or die(__("Unable to upgrade the plugin.", "moreldap"));
       if ($DB->numrows($result) != 1) {
@@ -222,5 +220,4 @@ function plugin_moreldap_getVersion() {
       $data = $DB->fetch_assoc($result);
       return $data['value'];
    }
-    
 }

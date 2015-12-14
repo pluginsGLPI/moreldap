@@ -1,0 +1,50 @@
+<root>
+   <name>More LDAP</name>
+   <key>moreldap</key>
+   <state>stable</state>
+   <logo>https://raw.githubusercontent.com/pluginsGLPI/moreldap/master/icon.png</logo>
+   <description>
+      <short>
+         <en>get more data from your LDAP / AD</en>
+         <fr>Obtenez plus d'informations à partir de votre annuaire LDAP / AD</fr>
+      </short>
+      <long>
+         <en>One single feature for now : create locations from your LDAP / AD users</en>
+         <fr>Une seule fonctionnalité pour le moment : crée les lieux à partir des utilisateurs LDAP / AD</fr>
+      </long>
+   </description>
+   <homepage>https://github.com/pluginsGLPI/moreldap</homepage>
+   <download>https://github.com/pluginsGLPI/moreldap/releases</download>
+   <issues>https://github.com/pluginsGLPI/moreldap/issues</issues>
+   <readme>https://github.com/pluginsGLPI/moreldap/blob/master/README.md</readme>
+   <authors>
+      <author>Dethegeek</author>
+   </authors>
+   <versions>
+      <version>
+         <num>0.1.2</num>
+         <compatibility>0.84</compatibility>
+      </version>
+      <version>
+         <num>0.2.0</num>
+         <compatibility>0.85</compatibility>
+      </version>
+   <langs>
+      <lang>en_GB</lang>
+      <lang>fr_FR</lang>
+      <lang>ru_RU</lang>
+      <lang>tr_TR</lang>
+   </langs>
+   <license>GPL v2+</license>
+   <tags>
+      <fr>
+         <tag>LDAP</tag>
+      </fr>
+      <en>
+         <tag>LDAP</tag>
+      </en>
+   </tags>
+   <screenshots>
+      <screenshot>https://raw.githubusercontent.com/pluginsGLPI/moreldap/master/pics/more-ldap-screenshot.png</screenshot>
+   </screenshots>
+   </root>
