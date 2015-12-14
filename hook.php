@@ -65,7 +65,6 @@ function plugin_moreldap_uninstall() {
 
 
 function plugin_moreldap_item_add_or_update_user($user) {
-   Toolbox::logDebug($user);
 
    // default : store locations outside of any entity
    $entityID = -1;
