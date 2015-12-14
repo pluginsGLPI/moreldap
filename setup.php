@@ -34,11 +34,10 @@ http://www.gnu.org/licenses/gpl.txt
 ------------------------------------------------------------------------
 */
 
-define ("PLUGIN_MORELDAP_VERSION", "0.2.0");
+define ("PLUGIN_MORELDAP_VERSION", "0.2.1");
 
 // Minimal GLPI version, inclusive
 define ("PLUGIN_MORELDAP_GLPI_MIN_VERSION", "0.85");
-// Maximum GLPI version, exclusive
 
 // Get the name and the version of the plugin - Needed
 function plugin_version_moreldap() {
