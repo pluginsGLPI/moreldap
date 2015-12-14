@@ -71,7 +71,7 @@ function plugin_moreldap_item_add_or_update_user($user) {
 
    $pluginAuthLDAP = new PluginMoreldapAuthLDAP();
    $authsId = isset($user->input["auths_id"]) ? $user->input["auths_id"] : $user->fields["auths_id"];
-   if ($pluginAuthLDAP->getFromDBByQuery("WHERE `id`='$authsId'")) {
+   if ($authsId > 0 && $pluginAuthLDAP->getFromDBByQuery("WHERE `id`='$authsId'")) {
 
       // The target entity for the locations to be created
       $entityID = $pluginAuthLDAP->fields['entities_id'];
