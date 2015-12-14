@@ -34,7 +34,7 @@ http://www.gnu.org/licenses/gpl.txt
 ------------------------------------------------------------------------
 */
 
-define ("PLUGIN_MORELDAP_VERSION", "0.1.2");
+define ("PLUGIN_MORELDAP_VERSION", "0.1.3");
 
 // Minimal GLPI version, inclusive
 define ("PLUGIN_MORELDAP_GLPI_MIN_VERSION", "0.84");
@@ -66,25 +66,28 @@ function plugin_moreldap_check_prerequisites() {
 
 function plugin_init_moreldap() {
 	global $PLUGIN_HOOKS, $CFG_GLPI, $LANG;
-	
+
 	$PLUGIN_HOOKS['csrf_compliant']['moreldap'] = true;
-	
+
 	$plugin = new Plugin();
 	if ($plugin->isInstalled("moreldap") && $plugin->isActivated("moreldap")) {
 
 	   //Add a tab on AuthLDAP items
 	   Plugin::registerClass('PluginMoreldapAuthLDAP', array('addtabon' => 'AuthLDAP'));
-	   
-   	// request more attributes from LDAP
-   	$PLUGIN_HOOKS['retrieve_more_field_from_ldap']['moreldap'] = "plugin_retrieve_more_field_from_ldap_moreldap";
-   	// Retrieve others datas from LDAP
-   	$PLUGIN_HOOKS['retrieve_more_data_from_ldap']['moreldap'] = "plugin_retrieve_more_data_from_ldap_moreldap";
 
-	      // Indicate where the configuration page can be found
+      $PLUGIN_HOOKS['item_add']['moreldap'] = array(
+         'User' => 'plugin_moreldap_item_add_or_update_user',
+      );
+      $PLUGIN_HOOKS['item_update']['moreldap'] = array(
+            'User' => 'plugin_moreldap_item_add_or_update_user',
+      );
+
+      // Indicate where the configuration page can be found
       if (Session::haveRight('config', 'w')) {
          $PLUGIN_HOOKS['config_page']['moreldap'] = 'front/authldap.php';
       }
-	}
+
+   }
 
 }
 
