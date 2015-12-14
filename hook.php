@@ -36,7 +36,7 @@ http://www.gnu.org/licenses/gpl.txt
 function plugin_moreldap_install() {
    global $DB;
 
-   $oldVersion = plugin_moreldap_getVersion();
+   $oldVersion =  plugin_moreldap_getVersion();
    switch ($oldVersion) {
       case '0' :
       case '0.1' :
@@ -163,40 +163,122 @@ function plugin_retrieve_more_data_from_ldap_moreldap(array $fields) {
 
 function plugin_moreldap_item_add_user($user) {
    Toolbox::logDebug($user);
-   $pluginAuthLDAP = new PluginMoreldapAuthLDAP;
-   $pluginAuthLDAP->getFromDBByQuery("WHERE `id`='" . $user->input["auths_id"] . "'");
 
-   $field           = $pluginAuthLDAP->fields['location'];
-   $ldap_connection = $user->input['_ldap_conn'];
-   $userdn          = $user->input['user_dn'];
-   $sr              = @ldap_read($ldap_connection, $userdn, "objectClass=*", array($field));
-   $v               = AuthLDAP::get_entries_clean($ldap_connection, $sr);
-   $locations_name  = $v[0][$field][0];
-   $locations_name  = 'Formation > GLPI';
+   // default : store locations outside of any entity
+   $entityID = -1;
 
-   //check if this location exist
-   $location  = new location;
-   $locations = $location->find("name = '$locations_name'");
-   if (count($locations) > 0) {
-      //get existing location
-      $first_location = array_shift($locations);
-      $locations_id   = $first_location['id'];
+   $pluginAuthLDAP = new PluginMoreldapAuthLDAP();
+   if ($pluginAuthLDAP->getFromDBByQuery("WHERE `id`='" . $user->input["auths_id"] . "'")) {
 
-   } else {
-      //create new location
-      $new_location = array(
-         'name'         => $locations_name,
-         'comment'      => __("Created by MoreLDAP", "moreldap"),
-         'entities_id'  => 0,
-         'is_recursive' => 1
-      );
-      $locations_id = $location->add($new_location);
+      // The target entity for the locations to be created
+      $entityID = $pluginAuthLDAP->fields['entities_id'];
+
+      // find from config all attributes to read from LDAP
+      $fields = array();
+      $locationHierarchy = explode('>', $pluginAuthLDAP->fields['location']);
+      foreach ($locationHierarchy as $locationSubAttribute) {
+         $locationSubAttribute = trim($locationSubAttribute);
+         if (strlen($locationSubAttribute) > 0) {
+            //$fields[$locationSubAttribute] = $locationSubAttribute;
+            $fields[] = $locationSubAttribute;
+         }
+      }
+
+      // LDAP query to read the needed attributes for the user
+      //$field           = $pluginAuthLDAP->fields['location'];
+      $ldap_connection = $user->input['_ldap_conn'];
+      $userdn          = $user->input['user_dn'];
+      //$sr              = @ldap_read($ldap_connection, $userdn, "objectClass=*", array($field));
+      $sr              = @ldap_read($ldap_connection, $userdn, "objectClass=*", $fields);
+      $v               = AuthLDAP::get_entries_clean($ldap_connection, $sr);
+      //$locations_name  = $v[0][$field][0];
+      //$locations_name  = 'Formation > GLPI';
+
+      //Find all locations needed to create the deepest one
+      $locationPath = array();
+      $incompleteLocation = false;
+      foreach ($fields as $locationSubAttribute) {
+         $locationSubAttribute = strtolower($locationSubAttribute);
+         if (isset($v[0][$locationSubAttribute][0])) {
+            $locationPath[] = $v[0][$locationSubAttribute][0];
+         } else {
+            // A LDAP attribute is not defined for the user. Cannot build the completename
+            // Therefore we must giveup importing this location
+            $incompleteLocation = true;
+         }
+      }
+
+      // TODO : test if location import is enabled earlier in this function
+      if ($pluginAuthLDAP->fields['location_enabled'] == 'Y') {
+         if ($incompleteLocation == false) {
+            $location = new Location();
+            $locationAncestor = 0;
+            $locationCompleteName = array();
+            $allLocationsExist = true; // Assume we created or found all locations
+            // while ($locatinItem = array_shift($locationPath) && $allLocationsExist) {
+            foreach ($locationPath as $locationItem) {
+               if ($allLocationsExist) {
+                  $locationCompleteName[] = $locationItem;
+                  $locationItem = Toolbox::addslashes_deep(array(
+                        'entities_id' => $entityID,
+                        'name' => $locationItem,
+                        'locations_id' => $locationAncestor,
+                        'completename' => implode(' > ', $locationCompleteName),
+                        'is_recursive' => $pluginAuthLDAP->fields['is_recursive'],
+                        'comment'      => __("Created by MoreLDAP", "moreldap")
+                  ));
+                  $locationAncestor = $location->findID($locationItem);
+                  if ($locationAncestor == -1) {
+                     // The location does not exists yet
+                     $locationAncestor = $location->add($locationItem);
+                  }
+                  if ($locationAncestor == false) {
+                     // If a location could not be imported and does not exist
+                     // then give up importing children items
+                     $allLocationsExist = false;
+                  }
+               }
+            }
+            if ($allLocationsExist) {
+               // All locations exist to match the path described un LDAP
+               $locations_id = $locationAncestor;
+               $user->update(array(
+                     'id'           => $user->getID(),
+                     'locations_id' => $locations_id,
+               ));
+            }
+         }
+      } else {
+         // If the location retrieval is disabled, enablig this line will erase the location for the user.
+         // $fields['locations_id'] = 0;
+      }
    }
 
-   $user->update(array(
-      'id'           => $user->getID(),
-      'locations_id' => $locations_id,
-   ));
+//    $location_id = 0;
+
+//    //check if this location exist
+//    $location  = new location;
+//    $locations = $location->find("name = '$locations_name'");
+//    if (count($locations) > 0) {
+//       //get existing location
+//       $first_location = array_shift($locations);
+//       $locations_id   = $first_location['id'];
+
+//    } else {
+//       //create new location
+//       $new_location = array(
+//          'name'         => $locations_name,
+//          'comment'      => __("Created by MoreLDAP", "moreldap"),
+//          'entities_id'  => 0,
+//          'is_recursive' => 1
+//       );
+//       $locations_id = $location->add($new_location);
+//    }
+
+//    $user->update(array(
+//       'id'           => $user->getID(),
+//       'locations_id' => $locations_id,
+//    ));
 }
 
 /**
