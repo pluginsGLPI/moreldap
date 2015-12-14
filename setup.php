@@ -66,25 +66,28 @@ function plugin_moreldap_check_prerequisites() {
 
 function plugin_init_moreldap() {
 	global $PLUGIN_HOOKS, $CFG_GLPI, $LANG;
-	
+
 	$PLUGIN_HOOKS['csrf_compliant']['moreldap'] = true;
-	
+
 	$plugin = new Plugin();
 	if ($plugin->isInstalled("moreldap") && $plugin->isActivated("moreldap")) {
-   	
+
 	   //Add a tab on AuthLDAP items
 	   Plugin::registerClass('PluginMoreldapAuthLDAP', array('addtabon' => 'AuthLDAP'));
-	   
-   	// request more attributes from LDAP
-   	$PLUGIN_HOOKS['retrieve_more_field_from_ldap']['moreldap'] = "plugin_retrieve_more_field_from_ldap_moreldap";
-   	// Retrieve others datas from LDAP
-   	$PLUGIN_HOOKS['retrieve_more_data_from_ldap']['moreldap'] = "plugin_retrieve_more_data_from_ldap_moreldap";
 
-	      // Indicate where the configuration page can be found
+      $PLUGIN_HOOKS['item_add']['moreldap'] = array(
+         'User' => 'plugin_moreldap_item_add_or_update_user',
+      );
+      $PLUGIN_HOOKS['item_update']['moreldap'] = array(
+            'User' => 'plugin_moreldap_item_add_or_update_user',
+      );
+
+      // Indicate where the configuration page can be found
       if (Session::haveRight('config', UPDATE)) {
          $PLUGIN_HOOKS['config_page']['moreldap'] = 'front/authldap.php';
       }
-	}
+   }
+
 }
 
 // Uninstall process for plugin : need to return true if succeeded : may display messages or add to message after redirect
