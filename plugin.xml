@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <root>
    <name>More LDAP</name>
    <key>moreldap</key>
@@ -28,6 +29,7 @@
       <version>
          <num>0.2.0</num>
          <compatibility>0.85</compatibility>
+         <compatibility>0.90</compatibility>
       </version>
    </versions>
    <langs>
@@ -48,4 +50,4 @@
    <screenshots>
       <screenshot>https://raw.githubusercontent.com/pluginsGLPI/moreldap/master/pics/more-ldap-screenshot.png</screenshot>
    </screenshots>
-   </root>
+</root>
