@@ -88,6 +88,7 @@ function plugin_moreldap_item_add_or_update_user($user) {
       // LDAP query to read the needed attributes for the user
       $ldap_connection = isset($user->input["_ldap_conn"]) ? $user->input["_ldap_conn"] : $user->fields["_ldap_conn"];
       $userdn          = isset($user->input["user_dn"]) ? $user->input["user_dn"] : $user->fields["user_dn"];
+      $userdn          = str_replace('\\\\', '\\', $userdn);
       $sr              = @ldap_read($ldap_connection, $userdn, "objectClass=*", $fields);
       $v               = AuthLDAP::get_entries_clean($ldap_connection, $sr);
 
