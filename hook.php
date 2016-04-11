@@ -67,13 +67,13 @@ function plugin_moreldap_uninstall() {
 function plugin_moreldap_item_add_or_update_user($user) {
 
    // We update LDAP field only if LDAP directory is defined
-   if (!isset($user->input["auths_id"])) return;
+   if (isset($user->input["locations_id"])) return;
 
    // default : store locations outside of any entity
    $entityID = -1;
 
    $pluginAuthLDAP = new PluginMoreldapAuthLDAP();
-   $authsId        = $user->input["auths_id"];
+   $authsId = isset($user->input["auths_id"]) ? $user->input["auths_id"] : $user->fields["auths_id"];
    if ($authsId > 0 && $pluginAuthLDAP->getFromDBByQuery("WHERE `id`='$authsId'")) {
 
       // The target entity for the locations to be created
@@ -90,8 +90,15 @@ function plugin_moreldap_item_add_or_update_user($user) {
       }
 
       // LDAP query to read the needed attributes for the user
-      $ldap_connection = $user->input["_ldap_conn"];
-      $userdn          = $user->input["user_dn"];
+      $ldap_connection = 0;
+      if (!isset($user->input["_ldap_conn"]) || !isset($user->fields["_ldap_conn"])) {
+         $ldap = new AuthLDAP;
+         $ldap->getFromDB($authsId);
+         $ldap_connection = $ldap->connect();
+      } else {
+         $ldap_connection = isset($user->input["_ldap_conn"]) ? $user->input["_ldap_conn"] : $user->fields["_ldap_conn"];
+      }
+      $userdn          = isset($user->input["user_dn"]) ? $user->input["user_dn"] : $user->fields["user_dn"];
       $sr              = @ldap_read($ldap_connection, $userdn, "objectClass=*", $fields);
       $v               = AuthLDAP::get_entries_clean($ldap_connection, $sr);
 
