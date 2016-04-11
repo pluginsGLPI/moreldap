@@ -150,7 +150,8 @@ function plugin_moreldap_item_add_or_update_user($user) {
             if ($allLocationsExist) {
                // All locations exist to match the path described un LDAP
                $locations_id = $locationAncestor;
-               $user->update(array(
+               $myuser = new User; // new var to prevent user->input erasing (object are always passed by "reference")
+               $myuser->update(array(
                      'id'           => $user->getID(),
                      'locations_id' => $locations_id,
                ));
