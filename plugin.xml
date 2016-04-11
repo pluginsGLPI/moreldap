@@ -31,13 +31,7 @@
          <compatibility>0.84</compatibility>
       </version>
       <version>
-         <num>0.2.0</num>
-         <compatibility>0.85</compatibility>
-         <compatibility>0.90</compatibility>
-         <compatibility>0.91</compatibility>
-      </version>
-      <version>
-         <num>0.2.1</num>
+         <num>0.2.2</num>
          <compatibility>0.85</compatibility>
          <compatibility>0.90</compatibility>
          <compatibility>0.91</compatibility>
