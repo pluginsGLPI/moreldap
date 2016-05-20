@@ -101,7 +101,7 @@ function plugin_moreldap_item_add_or_update_user($user) {
                               : $user->fields["_ldap_conn"];
       }
       $userdn          = ldap_escape(isset($user->input["user_dn"])
-                                       ? $user->input["user_dn"])
+                                       ? $user->input["user_dn"]
                                        : $user->fields["user_dn"]);
       $sr              = @ldap_read($ldap_connection, $userdn, "objectClass=*", $fields);
       $v               = AuthLDAP::get_entries_clean($ldap_connection, $sr);
