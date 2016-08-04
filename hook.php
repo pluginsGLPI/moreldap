@@ -66,6 +66,9 @@ function plugin_moreldap_uninstall() {
 
 function plugin_moreldap_item_add_or_update_user($user) {
 
+   //Ignore users without auths_id
+   if (!isset($user->input["auths_id"])) return;
+   
    // We update LDAP field only if LDAP directory is defined
    if (isset($user->input["locations_id"])) return;
 
