@@ -61,7 +61,6 @@ function plugin_moreldap_check_prerequisites() {
 	return true;
 }
 
-
 function plugin_init_moreldap() {
 	global $PLUGIN_HOOKS, $CFG_GLPI, $LANG;
 
@@ -77,7 +76,7 @@ function plugin_init_moreldap() {
       // $PLUGIN_HOOKS['retrieve_more_field_from_ldap']['moreldap'] = "plugin_retrieve_more_field_from_ldap_moreldap";
       // Retrieve others datas from LDAP
       $PLUGIN_HOOKS['item_add']['moreldap'] = array(
-         'User' => 'plugin_moreldap_item_add_or_update_user',
+            'User' => 'plugin_moreldap_item_add_or_update_user',
       );
       $PLUGIN_HOOKS['item_update']['moreldap'] = array(
             'User' => 'plugin_moreldap_item_add_or_update_user',
