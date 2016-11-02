@@ -34,7 +34,7 @@ http://www.gnu.org/licenses/gpl.txt
 ------------------------------------------------------------------------
 */
 
-define ("PLUGIN_MORELDAP_VERSION", "0.2.2");
+define ("PLUGIN_MORELDAP_VERSION", "0.2.3");
 
 // Minimal GLPI version, inclusive
 define ("PLUGIN_MORELDAP_GLPI_MIN_VERSION", "0.85");
