@@ -1,6 +1,10 @@
 # moreldap
 plugin moreLDAP for GLPI
 
+## This plugin is now End Of Life
+
+GLPI 9.1 has now a similar feature. This plugin is no longer needed.
+
 ## Overview
 
 The purpose of MoreLDAP is to enhance integration of a LDAP or AD directory into GLPI.
